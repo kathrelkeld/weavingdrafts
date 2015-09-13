@@ -28,6 +28,10 @@ Grid.prototype.getSquare = function(position) {
   return this.squares[position.y][position.x];
 }
 
+Grid.prototype.isSet = function(position) {
+  return this.getSquare(position).value
+}
+
 Grid.prototype.toggle = function(position) {
   this.getSquare(position).toggle();
 }
@@ -123,27 +127,27 @@ WarpGrid.prototype.handleClick = function(position) {
   var square = this.grid.getSquare(position);
   if (square.value) {
     square.setValue(false);
-    this.draft.removeOldWarp(position);
-    return;
-  }
-  square.setValue(true);
-  for (var y = 0; y < this.grid.size.y; y++) {
-    var current = this.grid.getSquare(vec(position.x, y));
-    if ((y != position.y) && current.value) {
-      current.setValue(false);
-      this.draft.removeOldWarp(current.position);
+  } else {
+    square.setValue(true);
+    for (var y = 0; y < this.grid.size.y; y++) {
+      var current = this.grid.getSquare(vec(position.x, y));
+      if ((y != position.y) && current.value) {
+        current.setValue(false);
+      }
     }
   }
-  this.draft.drawInNewWarp(position);
+  this.draft.redraw();
 }
 
 function TieupGrid(size, draft) {
+  this.draft = draft;
   this.grid = new Grid(size, this, draft);
 }
 
 TieupGrid.prototype.handleClick = function(position) {
   var square = this.grid.getSquare(position);
   square.toggle(position);
+  this.draft.redraw();
 }
 
 function WeftGrid(size, draft) {
@@ -152,12 +156,19 @@ function WeftGrid(size, draft) {
 }
 
 WeftGrid.prototype.handleClick = function(position) {
-  this.grid.toggle(position);
-  for (var x = 0; x < this.grid.size.x; x++) {
-    if (x != position.x) {
-      this.grid.setOff(vec(x, position.y));
+  var square = this.grid.getSquare(position);
+  if (square.value) {
+    square.setValue(false);
+  } else {
+    square.setValue(true);
+    for (var x = 0; x < this.grid.size.x; x++) {
+      var current = this.grid.getSquare(vec(x, position.y));
+      if ((x != position.x) && current.value) {
+        current.setValue(false);
+      }
     }
   }
+  this.draft.redraw();
 }
 
 function PatternGrid(size, draft) {
@@ -170,8 +181,9 @@ function PatternGrid(size, draft) {
 PatternGrid.prototype.handleClick = function(position) {
 }
 
-PatternGrid.prototype.setColor = function(position, color) {
-  this.grid.getSquare(position).setColor(color);
+PatternGrid.prototype.setColor = function(position, color, type) {
+  var square = this.grid.getSquare(position);
+  square.setColor(color);
 }
 
 function WarpColorGrid(size, draft) {
@@ -183,6 +195,7 @@ function WarpColorGrid(size, draft) {
 
 WarpColorGrid.prototype.handleClick = function(position) {
   this.grid.getSquare(position).setColor("yellow");
+  this.draft.redraw();
 }
 
 WarpColorGrid.prototype.getColor = function(col) {
@@ -197,6 +210,8 @@ function WeftColorGrid(size, draft) {
 }
 
 WeftColorGrid.prototype.handleClick = function(position) {
+  this.grid.getSquare(position).setColor("orange");
+  this.draft.redraw();
 }
 
 WeftColorGrid.prototype.getColor = function(row) {

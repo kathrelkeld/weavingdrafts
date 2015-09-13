@@ -4,7 +4,7 @@ function Draft(shafts, treadles, width, length) {
   this.size = vec(width, length)
   this.squareSize = 20;
   this.gapSize = 1;
-  this.defaultColor = "purple";
+  this.defaultColor = "grey";
   this.div = document.getElementById('draftgrid');
 
   this.setup();
@@ -37,32 +37,54 @@ Draft.prototype.setup = function() {
   console.log("Finished setting up draft!");
 }
 
-Draft.prototype.drawInNewWarp = function(warpPos) {
-  var warpColor = this.warpcolor.getColor(warpPos.x);
-  var tieupToggled = this.tieup.grid.getToggledInRow(warpPos.y);
-  if (tieupToggled.length == 0) { return; }
-  for (var i = 0; i < tieupToggled.length; i++) {
-    var currWeftCol = tieupToggled[i];
-    var weftToggled = this.weft.grid.getToggledInCol(currWeftCol);
-    if (weftToggled.length == 0) { continue; }
-    for (var j = 0; j < weftToggled.length; j++) {
-      var currWeftRow = weftToggled[j];
-      this.pattern.setColor(vec(warpPos.x, currWeftRow), warpColor);
-    }
-  }
+Draft.prototype.setToWarpColor = function(position) {
+  var color = this.warpcolor.getColor(position.x);
+  this.pattern.setColor(position, color, "warp");
 }
 
-Draft.prototype.removeOldWarp = function(warpPos) {
-  var tieupToggled = this.tieup.grid.getToggledInRow(warpPos.y);
-  if (tieupToggled.length == 0) { return; }
-  for (var i = 0; i < tieupToggled.length; i++) {
-    var currWeftCol = tieupToggled[i];
-    var weftToggled = this.weft.grid.getToggledInCol(currWeftCol);
-    if (weftToggled.length == 0) { continue; }
-    for (var j = 0; j < weftToggled.length; j++) {
-      var currWeftRow = weftToggled[j];
-      var weftColor = this.weftcolor.getColor(currWeftRow);
-      this.pattern.setColor(vec(warpPos.x, currWeftRow), weftColor);
+Draft.prototype.setToWeftColor = function(position) {
+  var color = this.weftcolor.getColor(position.y);
+  this.pattern.setColor(position, color, "weft");
+}
+
+Draft.prototype.setToDefaultColor = function(position) {
+  this.pattern.setColor(position, this.defaultColor, "default");
+}
+
+// Redraw the pattern box.
+Draft.prototype.redraw = function() {
+  for (var y = 0; y < this.size.y; y++) {
+    var weftToggled = this.weft.grid.getToggledInRow(y);
+
+    // If no weft is set, change all colors to default.
+    if (weftToggled.length == 0) {
+      for (var x = 0; x < this.size.x; x++) {
+        this.setToDefaultColor(vec(x, y));
+      }
+      continue;
+    }
+
+    var tieupToggled = this.tieup.grid.getToggledInCol(weftToggled[0]);
+
+    // If no tieup, change all colors to default.
+    if (tieupToggled.length == 0) { 
+      for (var x = 0; x < this.size.x; x++) {
+        this.setToDefaultColor(vec(x, y));
+      }
+      continue;
+    }
+
+    // Set row to weft color.
+    for (var x = 0; x < this.size.x; x++) {
+      this.setToWeftColor(vec(x, y));
+    }
+
+    // For each shaft tied to this tieup, set to warp color.  Else, weft.
+    for (var tiedI = 0; tiedI < tieupToggled.length; tiedI++) {
+      var warpToggled = this.warp.grid.getToggledInRow(tieupToggled[tiedI]);
+      for (var i = 0; i < warpToggled.length; i++) {
+        this.setToWarpColor(vec(warpToggled[i], y));
+      }
     }
   }
 }
