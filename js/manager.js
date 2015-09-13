@@ -3,7 +3,7 @@ function Draft(shafts, treadles, width, length) {
   this.treadles = treadles;
   this.size = vec(width, length)
   this.squareSize = 20;
-  this.gapSize = 1;
+  this.gapSize = 2;
   this.defaultColor = "grey";
   this.div = document.getElementById('draftgrid');
 

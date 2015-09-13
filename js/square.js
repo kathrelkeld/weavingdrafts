@@ -34,6 +34,7 @@ Square.prototype.setColor = function(color) {
   this.div.style.backgroundColor = color;
 }
 
+// Toggle value of square.
 Square.prototype.toggle = function() {
   this.setValue(!this.value);
 }

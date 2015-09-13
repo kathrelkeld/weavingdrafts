@@ -28,19 +28,7 @@ Grid.prototype.getSquare = function(position) {
   return this.squares[position.y][position.x];
 }
 
-Grid.prototype.isSet = function(position) {
-  return this.getSquare(position).value
-}
-
-Grid.prototype.toggle = function(position) {
-  this.getSquare(position).toggle();
-}
-
-Grid.prototype.setOff = function(position) {
-  var current = this.getSquare(position);
-  current.setValue(false);
-}
-
+// Return a list of all the squares toggled in the given row.
 Grid.prototype.getToggledInRow = function(row) {
   var found = [];
   for (var x = 0; x < this.size.x; x++) {
@@ -52,6 +40,7 @@ Grid.prototype.getToggledInRow = function(row) {
   return found;
 }
 
+// Return a list of all the squares toggled in the given column.
 Grid.prototype.getToggledInCol = function(col) {
   var found = [];
   for (var y = 0; y < this.size.y; y++) {
@@ -72,24 +61,21 @@ Grid.prototype.applyToAll = function(func) {
   }
 }
 
+// Set all squares to the given color.
 Grid.prototype.setColorOfAll = function(color) {
   this.applyToAll(function(square) {
     square.div.style.backgroundColor = color;
   })
 }
 
-Grid.prototype.addClassToAll = function(c) {
-  this.applyToAll(function(square) {
-    square.div.classList.add(c);
-  })
-}
-
+// Remove the given class from all squares.
 Grid.prototype.removeClassFromAll = function(c) {
   this.applyToAll(function(square) {
     square.div.classList.remove(c);
   })
 }
 
+// Move grid and its squares to the given position.
 Grid.prototype.move = function(newPosition) {
   moveDiv(this.div, newPosition);
   //this.applyToAll(function(square) {
@@ -176,6 +162,9 @@ function PatternGrid(size, draft) {
   this.grid = new Grid(size, this, draft);
   this.grid.removeClassFromAll('square');
   this.grid.setColorOfAll(this.draft.defaultColor);
+  this.grid.applyToAll(function(square) {
+    square.type = "default";
+  });
 }
 
 PatternGrid.prototype.handleClick = function(position) {
@@ -184,6 +173,7 @@ PatternGrid.prototype.handleClick = function(position) {
 PatternGrid.prototype.setColor = function(position, color, type) {
   var square = this.grid.getSquare(position);
   square.setColor(color);
+  square.type = type;
 }
 
 function WarpColorGrid(size, draft) {
