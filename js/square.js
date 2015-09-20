@@ -41,5 +41,7 @@ Square.prototype.toggle = function() {
 
 // onMouseDown event handler.
 Square.prototype.mouseDown = function(e) {
-  this.grid.type.handleClick(this.position);
+  if (e.button == 0) {
+    this.grid.type.handleClick(this.position);
+  }
 }

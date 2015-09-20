@@ -88,3 +88,16 @@ Draft.prototype.redraw = function() {
     }
   }
 }
+
+function newDraft(hasTieup) {
+  var harnesses = document.getElementById("harnesses").value;
+  var treadles = document.getElementById("treadles").value;
+  var width = document.getElementById("warpCnt").value;
+  var height = document.getElementById("weftCnt").value;
+  if (!hasTieup) {
+    treadles = harnesses;
+  }
+  setupDiv = document.getElementById("setup");
+  hideDiv(setupDiv);
+  globalDraft = new Draft(harnesses, treadles, width, height);
+}

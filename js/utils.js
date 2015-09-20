@@ -74,11 +74,11 @@ function createInput(id, defaultValue, parentDiv) {
 }
 
 function hideDiv(div) {
-  div.classList.add('hidden');
+  div.style.display = "none";
 }
 
 function showDiv(div) {
-  div.classList.remove('hidden');
+  div.style.display = "initial";
 }
 
 // Move the given div to the given position.
