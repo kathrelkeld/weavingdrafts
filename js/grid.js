@@ -136,9 +136,10 @@ TieupGrid.prototype.handleClick = function(position) {
   this.draft.redraw();
 }
 
-function WeftGrid(size, draft) {
+function WeftGrid(size, isTieup, draft) {
   this.draft = draft;
   this.grid = new Grid(size, this, draft);
+  this.isTieup = isTieup;
 }
 
 WeftGrid.prototype.handleClick = function(position) {
@@ -147,10 +148,12 @@ WeftGrid.prototype.handleClick = function(position) {
     square.setValue(false);
   } else {
     square.setValue(true);
-    for (var x = 0; x < this.grid.size.x; x++) {
-      var current = this.grid.getSquare(vec(x, position.y));
-      if ((x != position.x) && current.value) {
-        current.setValue(false);
+    if (this.isTieup) {
+      for (var x = 0; x < this.grid.size.x; x++) {
+        var current = this.grid.getSquare(vec(x, position.y));
+        if ((x != position.x) && current.value) {
+          current.setValue(false);
+        }
       }
     }
   }

@@ -1,4 +1,4 @@
-function Draft(shafts, treadles, width, length) {
+function Draft(shafts, treadles, width, length, isTieup) {
   this.shafts = shafts;
   this.treadles = treadles;
   this.size = vec(width, length)
@@ -6,6 +6,7 @@ function Draft(shafts, treadles, width, length) {
   this.gapSize = 2;
   this.defaultColor = "grey";
   this.div = document.getElementById('draftgrid');
+  this.isTieup = isTieup;
 
   this.setup();
 }
@@ -15,7 +16,7 @@ Draft.prototype.setup = function() {
   //this.addOptions();
   this.warp = new WarpGrid(vec(this.size.x, this.shafts), this);
   this.tieup = new TieupGrid(vec(this.treadles, this.shafts), this);
-  this.weft = new WeftGrid(vec(this.treadles, this.size.y), this);
+  this.weft = new WeftGrid(vec(this.treadles, this.size.y), this.isTieup, this);
   this.pattern = new PatternGrid(this.size, this);
   this.warpcolor = new WarpColorGrid(vec(this.size.x, 1), this);
   this.weftcolor = new WeftColorGrid(vec(1, this.size.y), this);
@@ -99,5 +100,5 @@ function newDraft(hasTieup) {
   }
   setupDiv = document.getElementById("setup");
   hideDiv(setupDiv);
-  globalDraft = new Draft(harnesses, treadles, width, height);
+  globalDraft = new Draft(harnesses, treadles, width, height, hasTieup);
 }
