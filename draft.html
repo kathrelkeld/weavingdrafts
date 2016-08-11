@@ -7,6 +7,16 @@
 <script src="js/grid.js"></script>
 <script src="js/manager.js"></script>
 
+<div id="setup">
+  <div>Harnesses: <input type="number" id="harnesses" value="4"></div>
+  <div>Treadles: <input type="number" id="treadles" value="6"></div>
+  <div>Warp Columns count<input type="number" id="warpCnt" value="16"></div>
+  <div>Weft Row count<input type="number" id="weftCnt" value="20"></div>
+  <div>
+  <button onclick="newDraft(true)">Use Tieup</button>
+  <button onclick="newDraft(false)">Use Lift Plan</button>
+  </div>
+</div>
 <div id="draftgrid"> </div>
 
 </body></html>
